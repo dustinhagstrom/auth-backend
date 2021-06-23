@@ -12,7 +12,7 @@ mongoose //connect to database is before server listen b/c database is priority 
     useUnifiedTopology: true,
   })
   .then(() => {
-    app.listen(3000, () => {
+    app.listen(port, () => {
       console.log(`Server connected on ${port}`);
       console.log("MONGODB CONNECTED");
     });
