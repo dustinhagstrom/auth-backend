@@ -25,7 +25,7 @@ async function signup(req, res, next) {
     });
 
     let savedUser = await createdUser.save();
-    res.json({ message: "success", payload: savedUser });
+    res.json({ message: "success - user created" });
   } catch (e) {
     console.log("1");
     next(e);
