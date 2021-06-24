@@ -1,9 +1,9 @@
 const bcrypt = require("bcryptjs");
-const User = require("../model/User");
-
 const jwt = require("jsonwebtoken");
 
-async function signup(req, res) {
+const User = require("../model/User");
+
+async function signup(req, res, next) {
   const { username, email, password, firstName, lastName } = req.body;
 
   const { errorObj } = res.locals;
@@ -27,7 +27,10 @@ async function signup(req, res) {
     let savedUser = await createdUser.save();
     res.json({ message: "success", payload: savedUser });
   } catch (e) {
-    res.status(500).json({ message: "Error", error: e });
+    console.log("1");
+    next(e);
+
+    // res.status(500).json({ message: "Error", error: e });
   }
 }
 
