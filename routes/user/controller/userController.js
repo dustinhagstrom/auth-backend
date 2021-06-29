@@ -35,7 +35,7 @@ async function signup(req, res, next) {
 }
 
 async function login(req, res) {
-  let errorObj = {};
+  const { errorObj } = res.locals;
   const { email, password } = req.body;
   if (Object.keys(errorObj).length > 0) {
     return res.status(500).json({ message: "failure", payload: errorObj });
@@ -74,7 +74,7 @@ async function login(req, res) {
   } catch (e) {
     console.log(e);
     console.log(e.message);
-    res.json({ message: "error", error: e });
+    next(e);
   }
 }
 

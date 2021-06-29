@@ -15,7 +15,9 @@ function dispatchErrorProduction(error, req, res) {
     if (error.isOperational) {
       return res.status(error.statusCode).json({
         status: error.status,
+        error: error,
         message: error.message,
+        stack: error.stack,
       });
     }
     // ^^^ this is to show an operational error
@@ -32,8 +34,8 @@ function handleMongoDBDuplicate(err) {
   // SOLUTION 1 - GO TO err.keyValue in err obj.
   console.log("111");
   //   console.log(err.keyValue);
-  //^^^^this is the key to an object with a length of only 1.
   let errorMessageDuplicateKey = Object.keys(err.keyValue)[0];
+  //^^^^this is the key to an object with a length of only 1.
   let errorMessageDuplicateValue = Object.values(err.keyValue)[0];
   let message = `${errorMessageDuplicateKey} - ${errorMessageDuplicateValue} is taken please choose another one.`;
   return new ErrorMessageHandlerClass(message, 400);
@@ -84,7 +86,7 @@ module.exports = (err, req, res, next) => {
   console.log("4");
   console.log(error);
 
-  error.message = err.message; //the message has to manually be extracted from err obj and applied to error obj
+  error.message = err.message; //the message has to manually be extracted from err obj and applied to error obj b/c spread operator doesn't transfer the message
   console.log("5");
   console.log(error.message);
   console.log("6");

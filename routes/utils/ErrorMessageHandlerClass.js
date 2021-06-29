@@ -1,5 +1,5 @@
 class ErrorMessageHandlerClass extends Error {
-  //extends ... an obj in this case an error obj. this Error obj is built in to mongoose or mongodb
+  //extends ... an obj in this case an error obj. this Error obj is built in to node
   constructor(message, statusCode) {
     super(message, statusCode);
 
