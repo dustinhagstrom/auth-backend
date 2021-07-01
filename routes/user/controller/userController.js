@@ -60,7 +60,6 @@ async function login(req, res) {
         let jwtToken = jwt.sign(
           {
             email: foundUser.email,
-            username: foundUser.username,
           },
           process.env.PRIVATE_JWT_KEY,
           {

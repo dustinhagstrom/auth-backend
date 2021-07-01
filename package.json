@@ -20,6 +20,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.11",
     "morgan": "^1.10.0",
+    "twilio": "^3.65.0",
     "validator": "^13.6.0"
   }
 }
