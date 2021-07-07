@@ -1,7 +1,9 @@
-const ErrorMessageHandlerClass = require("./ErrorMessageHandlerClass");
+const ErrorMessageHandlerClass = require("./ErrorMessageHandlerClass"); //bring in err class
 
 function dispatchErrorDevelopment(error, req, res) {
+  //function to handle errors in development phase
   if (req.originalUrl.startsWith("/api")) {
+    //if the req url startswith /api then give us the following error data
     return res.status(error.statusCode).json({
       status: error.status,
       error: error,
@@ -11,6 +13,7 @@ function dispatchErrorDevelopment(error, req, res) {
   }
 }
 function dispatchErrorProduction(error, req, res) {
+  //func to handle errors in production.
   if (req.originalUrl.startsWith("/api")) {
     if (error.isOperational) {
       return res.status(error.statusCode).json({
@@ -31,14 +34,15 @@ function dispatchErrorProduction(error, req, res) {
 }
 
 function handleMongoDBDuplicate(err) {
+  //pass in err obj to func
   // SOLUTION 1 - GO TO err.keyValue in err obj.
   console.log("111");
   //   console.log(err.keyValue);
-  let errorMessageDuplicateKey = Object.keys(err.keyValue)[0];
+  let errorMessageDuplicateKey = Object.keys(err.keyValue)[0]; //the zeroth index of an array of keys from an err obj.
   //^^^^this is the key to an object with a length of only 1.
-  let errorMessageDuplicateValue = Object.values(err.keyValue)[0];
-  let message = `${errorMessageDuplicateKey} - ${errorMessageDuplicateValue} is taken please choose another one.`;
-  return new ErrorMessageHandlerClass(message, 400);
+  let errorMessageDuplicateValue = Object.values(err.keyValue)[0]; //the zeroth index of an array of values from an err obj
+  let message = `${errorMessageDuplicateKey} - ${errorMessageDuplicateValue} is taken please choose another one.`; //this is used for items that must be unique in db
+  return new ErrorMessageHandlerClass(message, 400); //makes a new errormessagehandleclass with the message and status code 400 as args.
 
   //SOLUTION 2 - use REGEX on err.message
   // message: 'E11000 duplicate key error collection: auth-backend.users index: username_1 dup key: { username: "sjf" }'
@@ -74,15 +78,16 @@ function handleMongoDBDuplicate(err) {
 }
 
 module.exports = (err, req, res, next) => {
+  //export error handlers
   console.log("2");
-  err.statusCode = err.statusCode || 500;
-  err.status = err.status || "error";
+  err.statusCode = err.statusCode || 500; // if there is a status code then keep it otherwise apply 500
+  err.status = err.status || "error"; //same logic for status
   console.log("3");
   console.log(err);
   console.log("9");
   console.log({ ...err });
 
-  let error = { ...err };
+  let error = { ...err }; //assign error to spread of err obj
   console.log("4");
   console.log(error);
 
@@ -93,6 +98,7 @@ module.exports = (err, req, res, next) => {
   console.log(error);
 
   if (error.code === 11000 || error.code === 11001) {
+    //if the code is a mongodb duplicate error then error manipulated by handlemongodbduplicate func and reassign name error
     error = handleMongoDBDuplicate(error);
     //these error.codes are from mongodb or mongoose.
   }
@@ -100,6 +106,7 @@ module.exports = (err, req, res, next) => {
   console.log("7");
   console.log(error);
   if (process.env.NODE_ENV === "development") {
+    //if we are in dev mode the dispatch dev, else dispatch prod
     dispatchErrorDevelopment(error, req, res);
   } else {
     dispatchErrorProduction(error, req, res);

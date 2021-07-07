@@ -4,13 +4,14 @@ const {
   isEmail,
   isAlpha,
   isAlphanumeric,
-} = require("validator"); //isEmpty from validator module
+} = require("validator"); //destructures from validator module
 
-const checkIsEmpty = (target) => (isEmpty(target) ? true : false);
+const checkIsEmpty = (target) => (isEmpty(target) ? true : false); //make check is empty ternary
 
-const checkIsStrongPassword = (password) =>
-  isStrongPassword(password) ? true : false; //ternary for readability
-
+const checkIsStrongPassword = (
+  password //strong password check
+) => (isStrongPassword(password) ? true : false); //ternary for readability
+//and following are also checks. they are written like this in case we need to swap validator for something else in future
 const checkIsEmail = (email) => (isEmail(email) ? true : false);
 
 const checkIsAlpha = (name) => (isAlpha(name) ? true : false);
@@ -23,4 +24,4 @@ module.exports = {
   checkIsEmail,
   checkIsAlpha,
   checkIsAlphanumeric,
-};
+}; //export our funcs
