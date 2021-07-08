@@ -13,6 +13,7 @@ async function checkJwtToken(req, res, next) {
       let decodedJwt = jwt.verify(jwtToken, process.env.PRIVATE_JWT_KEY); //decode the token
 
       console.log(decodedJwt);
+      res.locals.decodedJwt = decodedJwt; //this will help us tie friends to a specific user.
       next(); //perform next func
     } else {
       //if we don't have headers and authorization header then throw error and message

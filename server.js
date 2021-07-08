@@ -21,5 +21,5 @@ mongoose //connect to database is before server listen b/c database is priority 
   })
   .catch((e) => {
     //catch all errors
-    console.log(e); //display the errors in console
+    console.log(e); //display the errors in consoled
   });

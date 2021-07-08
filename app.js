@@ -4,6 +4,7 @@ const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 
 const userRouter = require("./routes/user/userRouter"); //user router path
+const friendRouter = require("./routes/friend/friendRouter");
 const ErrorMessageHandlerClass = require("./routes/utils/ErrorMessageHandlerClass"); //ErrorMessageHandlerClass path
 const errorController = require("./routes/utils/errorController"); //errorController path
 const twilioRouter = require("./routes/twilio/twilioRouter"); //twilioRouter path
@@ -33,6 +34,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false })); //built in middleware in express that parses urlencoded payloads.
 app.use("/api/user", userRouter); // use userRouter
 app.use("/api/send-sms", twilioRouter); //use twilioRouter
+app.use("/api/friend", friendRouter);
 
 //if none of the urls match then following function is called. otherwise if error then it goes to errorController func
 app.all("*", function (req, res, next) {
