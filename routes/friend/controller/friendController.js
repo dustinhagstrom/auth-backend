@@ -45,7 +45,24 @@ const createFriend = async (req, res) => {
     res.status(500).json({ e: e, message: e.message });
   }
 };
-const editFriend = () => {};
+
+const editFriend = async (req, res) => {
+  let { id } = req.params;
+  let { firstName, lastName, mobileNumber } = req.body;
+  try {
+    let editedFriend = await Friend.findByIdAndUpdate(
+      { _id: id },
+      { firstName: firstName, lastName: lastName, mobileNumber: mobileNumber },
+      {
+        new: true,
+      }
+    );
+    res.json({ message: "success", payload: editedFriend });
+  } catch (e) {
+    res.status(500).json({ message: e.message, error: e });
+  }
+};
+
 const deleteFriend = () => {};
 
 module.exports = {
