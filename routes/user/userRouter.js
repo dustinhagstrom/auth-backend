@@ -1,7 +1,12 @@
 const express = require("express");
 const router = express.Router(); //bring in express and router
 
-const { signup, login, grabUser } = require("./controller/userController"); //bring in signup/login
+const {
+  signup,
+  login,
+  grabUser,
+  editUser,
+} = require("./controller/userController"); //bring in signup/login
 const checkIsEmptyFunc = require("./helpers/checkIsEmptyFunc"); //bring in our func
 
 const checkIsUndefined = require("./helpers/checkIsUndefined"); //bring in our func
@@ -37,5 +42,7 @@ router.post(
 );
 
 router.get("/get-user-info", jwtMiddleware, grabUser);
+
+router.put("/update-profile", jwtMiddleware, editUser);
 
 module.exports = router; //export our router

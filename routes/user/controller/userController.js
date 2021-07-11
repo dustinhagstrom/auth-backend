@@ -99,4 +99,25 @@ async function grabUser(req, res) {
   }
 }
 
-module.exports = { signup, login, grabUser }; //export signup and login and grabuser.
+async function editUser(req, res) {
+  try {
+    const { decodedJwt } = res.locals;
+
+    let editedUser = req.body;
+
+    let salt = await bcrypt.genSalt(12);
+    let hashedPassword = await bcrypt.hash(editedUser.password, salt);
+    editedUser.password = hashedPassword;
+
+    let updatedUser = await User.findOneAndUpdate(
+      { email: decodedJwt.email },
+      editedUser,
+      { new: true }
+    );
+    res.json({ message: "success", payload: updatedUser });
+  } catch (e) {
+    res.status(500).json({ message: e.message, error: e });
+  }
+}
+
+module.exports = { signup, login, grabUser, editUser }; //export signup and login and grabuser.
