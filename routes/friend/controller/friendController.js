@@ -63,7 +63,15 @@ const editFriend = async (req, res) => {
   }
 };
 
-const deleteFriend = () => {};
+const deleteFriend = async (req, res) => {
+  try {
+    let { id } = req.params;
+    let deletedFriend = await Friend.findByIdAndRemove({ _id: id });
+    res.json({ message: "success", payload: deletedFriend });
+  } catch (e) {
+    res.status(500).json({ message: e.message, error: e });
+  }
+};
 
 module.exports = {
   getAllFriends,

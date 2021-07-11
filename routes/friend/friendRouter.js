@@ -5,6 +5,7 @@ const {
   createFriend,
   getAllFriends,
   editFriend,
+  deleteFriend,
 } = require("./controller/friendController");
 
 router.get("/get-all-friends", jwtMiddleware, getAllFriends);
@@ -12,5 +13,7 @@ router.get("/get-all-friends", jwtMiddleware, getAllFriends);
 router.post("/create-friend", jwtMiddleware, createFriend);
 
 router.put("/edit-friend/:id", jwtMiddleware, editFriend);
+
+router.delete("/delete-friend/:id", jwtMiddleware, deleteFriend);
 
 module.exports = router;

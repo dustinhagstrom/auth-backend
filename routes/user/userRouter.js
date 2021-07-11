@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router(); //bring in express and router
 
-const { signup, login } = require("./controller/userController"); //bring in signup/login
+const { signup, login, grabUser } = require("./controller/userController"); //bring in signup/login
 const checkIsEmptyFunc = require("./helpers/checkIsEmptyFunc"); //bring in our func
 
 const checkIsUndefined = require("./helpers/checkIsUndefined"); //bring in our func
@@ -14,6 +14,9 @@ const {
   checkIsAlphanumericFunc,
 } = require("./helpers/authMiddleware"); //destructure middleware funcs
 //route a signup post req and run through all middleware and then through signup
+
+const jwtMiddleware = require("../utils/jwtMiddleware");
+
 router.post(
   "/sign-up",
   checkIsUndefined,
@@ -32,5 +35,7 @@ router.post(
   checkIsEmailFunc,
   login
 );
+
+router.get("/get-user-info", jwtMiddleware, grabUser);
 
 module.exports = router; //export our router

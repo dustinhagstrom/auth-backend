@@ -86,5 +86,17 @@ async function login(req, res) {
     next(e);
   }
 }
+async function grabUser(req, res) {
+  try {
+    const { decodedJwt } = res.locals;
 
-module.exports = { signup, login }; //export signup and login.
+    let payload = await User.findOne({ email: decodedJwt.email }).select(
+      "-__v -friends -_id -password"
+    );
+    res.json(payload);
+  } catch (e) {
+    res.status(500).json({ message: e.message, error: e });
+  }
+}
+
+module.exports = { signup, login, grabUser }; //export signup and login and grabuser.
