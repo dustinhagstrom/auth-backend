@@ -93,30 +93,36 @@ async function grabUser(req, res) {
     let payload = await User.findOne({ email: decodedJwt.email }).select(
       "-__v -friends -_id -password"
     );
-    res.json(payload);
+    res.json({ payload });
   } catch (e) {
     res.status(500).json({ message: e.message, error: e });
   }
 }
 
 async function editUser(req, res) {
-  try {
-    const { decodedJwt } = res.locals;
+  let editedUser = req.body;
 
-    let editedUser = req.body;
-
+  if (editedUser.password) {
     let salt = await bcrypt.genSalt(12);
     let hashedPassword = await bcrypt.hash(editedUser.password, salt);
     editedUser.password = hashedPassword;
+  }
+
+  try {
+    const { decodedJwt } = res.locals;
 
     let updatedUser = await User.findOneAndUpdate(
       { email: decodedJwt.email },
       editedUser,
       { new: true }
     );
-    res.json({ message: "success", payload: updatedUser });
+    if (editedUser.password) {
+      res.status(202).json({ message: "success", payload: updatedUser });
+    } else {
+      res.json({ message: "success", payload: updatedUser });
+    }
   } catch (e) {
-    res.status(500).json({ message: e.message, error: e });
+    next(e);
   }
 }
 
