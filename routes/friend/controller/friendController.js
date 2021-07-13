@@ -1,7 +1,7 @@
 const Friend = require("../model/Friend");
 const User = require("../../user/model/User");
 
-const getAllFriends = async (req, res) => {
+const getAllFriends = async (req, res, next) => {
   try {
     const { decodedJwt } = res.locals;
 
@@ -13,13 +13,13 @@ const getAllFriends = async (req, res) => {
         select: "-__v", //this is the versionKey that is automatically given to saved data. by having this field and a '-' we don't display the version.
       })
       .select("-email -password -firstName -lastName -__v -_id -username"); //this removes all the user information from the payload.
-    res.json(payload); //the payload is then only the friend information
+    res.json({ payload }); //the payload is then only the friend information
   } catch (e) {
-    res.status(500).json({ e: e, message: e.message });
+    next(e);
   }
 };
 
-const createFriend = async (req, res) => {
+const createFriend = async (req, res, next) => {
   try {
     const { firstName, lastName, mobileNumber } = req.body;
 
@@ -42,34 +42,55 @@ const createFriend = async (req, res) => {
 
     //
   } catch (e) {
-    res.status(500).json({ e: e, message: e.message });
+    next(e);
   }
 };
 
-const editFriend = async (req, res) => {
-  let { id } = req.params;
-  let { firstName, lastName, mobileNumber } = req.body;
+const editFriend = async (req, res, next) => {
+  let updateObj = {};
+  let body = req.body;
+  for (let key in body) {
+    if (body[key] !== "") {
+      updateObj[key] = body[key];
+    }
+  }
+  console.log(updateObj);
+
   try {
     let editedFriend = await Friend.findByIdAndUpdate(
-      { _id: id },
-      { firstName: firstName, lastName: lastName, mobileNumber: mobileNumber },
+      req.params.id,
+      updateObj,
       {
         new: true,
       }
-    );
+    ).select("-__v");
     res.json({ message: "success", payload: editedFriend });
   } catch (e) {
-    res.status(500).json({ message: e.message, error: e });
+    next(e);
   }
 };
 
-const deleteFriend = async (req, res) => {
+const deleteFriend = async (req, res, next) => {
   try {
     let { id } = req.params;
     let deletedFriend = await Friend.findByIdAndRemove({ _id: id });
+
+    const { decodedJwt } = res.locals;
+
+    let foundUser = await User.findOne({ email: decodedJwt.email });
+
+    let foundUserArray = foundUser.friends;
+
+    let filteredFriendsArray = foundUserArray.filter(
+      (id) => deletedFriend._id.toString() !== id.toString()
+    );
+
+    foundUser.friends = filteredFriendsArray;
+
+    await foundUser.save();
     res.json({ message: "success", payload: deletedFriend });
   } catch (e) {
-    res.status(500).json({ message: e.message, error: e });
+    next(e);
   }
 };
 
