@@ -47,10 +47,12 @@ const createFriend = async (req, res, next) => {
 };
 
 const editFriend = async (req, res, next) => {
-  let updateObj = {};
-  let body = req.body;
+  let updateObj = {}; //make empty obj
+  let body = req.body; //the req obj which are
   for (let key in body) {
+    updateobj;
     if (body[key] !== "") {
+      //if there blanks in firstName, lastName, or mobileNumber input field then don't put into updateObj
       updateObj[key] = body[key];
     }
   }

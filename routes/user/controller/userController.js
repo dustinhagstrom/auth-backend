@@ -117,9 +117,9 @@ async function editUser(req, res) {
       { new: true }
     );
     if (editedUser.password) {
-      res.status(202).json({ message: "success", payload: updatedUser });
+      res.status(202).json({ message: "success", payload: updatedUser }); //set the status to let front end handle logging out the user upon password change.
     } else {
-      res.json({ message: "success", payload: updatedUser });
+      res.json({ message: "success", payload: updatedUser }); //success - update user w/o updating user password
     }
   } catch (e) {
     next(e);
